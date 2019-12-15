@@ -1,0 +1,87 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+	<div class="loading-text">Loading...</div>
+	<div class="control-center" style="display:none">
+		<div class="control-module">
+			<div class="top-panel">
+				<button id="play-button" onclick="SongSmash.play()">Play</button>
+				<br>
+				<h3>BPM:</h3>
+				<br>
+				<input type="range" min="60" max="200" value="120" class="slider" name="bpm" onchange="SongSmash.setBPM(this)">
+			</div>
+		</div>
+		<div class="control-module">
+			<h2>Vocals🎤:</h2>
+		</div>
+		<div class="control-module">
+			<div class="bottom-panel">
+				<button onclick="SongSmash.slowDownVocal()">Slow Down (0.5x)</button>
+				<button onclick="SongSmash.speedUpVocal()">Speed Up (2x)</button>
+			</div>
+		</div>
+		<div class="control-module">
+			<div class="left-panel">
+				<img class="button" onclick="SongSmash.loadPrevVocal()" src="assets/transparent-arrow-md-left.png">
+			</div>
+			<div class="middle-panel">
+				<img class="coverImage" id="vocalImage" src="">
+			</div>
+			<div class="right-panel">
+				<img class="button" onclick="SongSmash.loadNextVocal()" src="assets/transparent-arrow-md.png
+					">
+			</div>
+		</div>
+		<div class="control-module">
+			<h2>Beat 🎹:</h2>
+		</div>
+		<div class="control-module">
+			<div class="bottom-panel">
+				<button onclick="SongSmash.slowDownInstrumental()">Slow Down (0.5x)</button>
+				<button onclick="SongSmash.speedUpInstrumental()">Speed Up (2x)</button>
+			</div>
+		</div>
+		<div class="control-module">
+			<div class="left-panel">
+				<img class="button" onclick="SongSmash.loadPrevInstrumental()" src="assets/transparent-arrow-md-left.png">
+			</div>
+			<div class="middle-panel">
+				<img class="coverImage" id="instrumentalImage" src="">
+			</div>
+			<div class="right-panel">
+				<img class="button" onclick="SongSmash.loadNextInstrumental()" src="assets/transparent-arrow-md.png">
+			</div>
+		</div>
+	</div>
+
+	<audio id="1" src="assets/kick.wav"></audio>
+	<audio id="2" src="assets/snare.wav"></audio>
+	<audio id="3" src="assets/hihat.wav"></audio>
+	<audio id="4" src="https://freewavesamples.com/files/Ensoniq-SQ-1-Open-Hi-Hat.wav"></audio>
+	<audio id="5" src="assets/clap.wav"></audio>
+	<audio loop id="loop" src="assets/plug.wav"></audio>
+	<audio loop id="loop2" src="assets/yesindeed.wav"></audio>
+	<audio loop id="loop3" src="assets/praise.wav"></audio>
+	<audio loop id="loop4" src="assets/kodak.wav"></audio>
+
+
+	<audio loop id="vocals" src="assets/vocals.wav"></audio>
+	<audio loop id="vocals2" src="assets/vocals2.wav"></audio>
+	<audio loop id="vocals3" src="assets/vocals3.wav"></audio>
+	<audio loop id="vocals4" src="assets/vocals4.wav"></audio>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="bufferloader.js"></script>
+<script type="text/javascript" src="soundsmash-prototype.js"></script>
+<script type="text/javascript" src="index.js"></script>
+<script type="text/javascript" src="files.js"></script>
+
+</html>

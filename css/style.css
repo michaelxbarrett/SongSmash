@@ -1,0 +1,39 @@
+.control-module {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 5px 0;
+}
+
+h2 {
+    color: white;
+    font-family: sans-serif;
+}
+
+.coverImage {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+}
+
+img.button {
+    width: 75px;
+    height: 75px;
+    cursor: pointer;
+}
+
+.top-panel h3 {
+    margin: 0;
+    text-align: center;
+    font-family: sans-serif;
+    color: white;
+}
+
+body {
+    background: black
+}
+
+.loading-text {
+    color: white;
+}
