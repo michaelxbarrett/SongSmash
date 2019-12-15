@@ -23,6 +23,15 @@ img.button {
     cursor: pointer;
 }
 
+.top-panel {
+    width: 100%;
+    text-align: center;
+}
+
+.slider {
+    width: 60%;
+}
+
 .top-panel h3 {
     margin: 0;
     text-align: center;
@@ -37,3 +46,4 @@ body {
 .loading-text {
     color: white;
 }
+
