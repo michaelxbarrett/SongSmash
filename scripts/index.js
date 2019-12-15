@@ -48,10 +48,11 @@ function getDataUri(url, callback) {
     image.crossOrigin = 'anonymous'
     image.onload = function () {
         var canvas = document.createElement('canvas');
-        canvas.width = 75; // or 'width' if you want a special/scaled size
-        canvas.height = 75; // or 'height' if you want a special/scaled size
+        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
-        canvas.getContext('2d').drawImage(this, 0, 0);
+        canvas.getContext('2d').drawImage(this, 0, 0, c, 75,
+                                    0, 0, 75, 75);
 
         // Get raw image data
         //callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
