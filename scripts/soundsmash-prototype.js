@@ -181,7 +181,9 @@ SongSmash.updateUI = function () {
 }
 
 SongSmash.setBPM = function (element) {
-  this.mixSource.playbackRate.value = parseInt(element.value) / 120
+  var bpm = parseInt(element.value)
+  this.mixSource.playbackRate.value = bpm / 120
+  $("p#bpm").html(bpm)
 }
 
 SongSmash.normalizedPlaybackRate = function (duration, bpm) {

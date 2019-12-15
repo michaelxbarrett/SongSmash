@@ -47,7 +47,7 @@ var InstrumentalFiles = [
     {
       name: 'Quavo',
       file: 'assets/audio/quavo_working_vocals_170.mp3',
-      img: 'assets/images/workin-e-cover.jpg',
+      img: 'assets/images/workin-me-cover.jpg',
       bpm: 170
     },
     {
