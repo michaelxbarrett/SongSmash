@@ -51,8 +51,7 @@ function getDataUri(url, callback) {
         canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
         canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
-        canvas.getContext('2d').drawImage(this, 0, 0, this.naturalWidth, this.height,
-                                    0, 0, 75, 75);
+        canvas.getContext('2d').drawImage(this, 0, 0);
 
         // Get raw image data
         //callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
