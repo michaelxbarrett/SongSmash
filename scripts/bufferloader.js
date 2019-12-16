@@ -6,30 +6,37 @@ function BufferLoader(context, urlList, callback) {
   this.loadCount = 0;
 }
 
-BufferLoader.prototype.loadBuffer = function(url, index) {
+BufferLoader.prototype.loadBuffer = function (url, index) {
   // Load buffer asynchronously
-  const request = new Request(url);
+  var myHeaders = new Headers();
+  myHeaders.append('pragma', 'force-cache');
+  myHeaders.append('cache-control', 'force-cache');
+  const request = new Request(url, {
+    method: 'GET',
+    headers: myHeaders
+  });
+  request.cache = 'no-store'
   var loader = this;
 
   fetch(request)
-  .then(x => x.arrayBuffer())
-  .then(function(buffer){
-    loader.context.decodeAudioData(
-      buffer,
-      function(buffer) {
-        if (!buffer) {
-          alert('error decoding file data: ' + url);
-          return;
+    .then(x => x.arrayBuffer())
+    .then(function (buffer) {
+      loader.context.decodeAudioData(
+        buffer,
+        function (buffer) {
+          if (!buffer) {
+            alert('error decoding file data: ' + url);
+            return;
+          }
+          loader.bufferList[index] = buffer;
+          if (++loader.loadCount == loader.urlList.length)
+            loader.onload(loader.bufferList);
+        },
+        function (error) {
+          console.error('decodeAudioData error', error);
         }
-        loader.bufferList[index] = buffer;
-        if (++loader.loadCount == loader.urlList.length)
-          loader.onload(loader.bufferList);
-      },
-      function(error) {
-        console.error('decodeAudioData error', error);
-      }
-    );
-  })
+      );
+    })
 
   // var request = new XMLHttpRequest();
   // request.open("GET", url, true);
@@ -63,7 +70,7 @@ BufferLoader.prototype.loadBuffer = function(url, index) {
   // request.send();
 }
 
-BufferLoader.prototype.load = function() {
+BufferLoader.prototype.load = function () {
   for (var i = 0; i < this.urlList.length; ++i)
-  this.loadBuffer(this.urlList[i], i);
+    this.loadBuffer(this.urlList[i], i);
 }
