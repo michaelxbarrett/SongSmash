@@ -6,7 +6,9 @@ var SongSmash = {
   targetBPM: 120,
   vocalMultiplier: 1,
   instrumentalMultiplier: 1,
-  gainNode: null
+  gainNode: null,
+  source1: null,
+  source2: null
 }
 
 SongSmash.loadNextInstrumental = function () {
@@ -66,6 +68,14 @@ SongSmash.loadPrevVocal = function () {
 }
 
 SongSmash.stop = function () {
+  if (SongSmash.source1) {
+    SongSmash.source1.stop()
+    SongSmash.source1.disconnect()
+  }
+  if (SongSmash.source2) {
+    SongSmash.source2.stop()
+    SongSmash.source2.disconnect()
+  }
   if (SongSmash.mixSource) {
     SongSmash.mixSource.stop()
     SongSmash.mixSource.disconnect()
@@ -139,12 +149,15 @@ SongSmash.play = function () {
 
   // render the mix
   this.stop()
+
+  SongSmash.source1 = source1
+  SongSmash.source2 = source2
   console.log("Rendering mix...")
   offlineContext.oncomplete = function (e) {
     var buffer = e.renderedBuffer
     console.log("Rendering complete.")
     //context.destination.disconnect()
-    SongSmash.stop()
+    //SongSmash.stop()
     let mixSource = context.createBufferSource()
     mixSource.buffer = buffer
     mixSource.connect(SongSmash.gainNode)
@@ -170,14 +183,14 @@ SongSmash.setVocalImage = function () {
 
     // Set the new image
     //imageElement.src = temporaryImage;
-    $("#vocalImage").attr("src", temporaryImage)
+    //$("#vocalImage").attr("src", temporaryImage)
 
   });
 }
 
 SongSmash.updateUI = function () {
   this.setVocalImage()
-  $("#instrumentalImage").attr("src", this.currentInstrumentalImageUrl())
+  //$("#instrumentalImage").attr("src", this.currentInstrumentalImageUrl())
 }
 
 SongSmash.setBPM = function (element) {
