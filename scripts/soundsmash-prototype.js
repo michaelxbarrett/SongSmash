@@ -8,7 +8,8 @@ var SongSmash = {
   instrumentalMultiplier: 1,
   gainNode: null,
   source1: null,
-  source2: null
+  source2: null,
+  isPlaying: false
 }
 
 SongSmash.loadNextInstrumental = function () {
@@ -68,11 +69,11 @@ SongSmash.loadPrevVocal = function () {
 }
 
 SongSmash.stop = function () {
-  if (SongSmash.source1 && SongSmash.source1.playbackState === 2) {
+  if (SongSmash.source1 && this.isPlaying) {
     SongSmash.source1.stop()
     SongSmash.source1.disconnect()
   }
-  if (SongSmash.source2 && SongSmash.source2.playbackState === 2) {
+  if (SongSmash.source2 && this.isPlaying) {
     SongSmash.source2.stop()
     SongSmash.source2.disconnect()
   }
@@ -82,6 +83,7 @@ SongSmash.stop = function () {
     delete SongSmash.mixSource.buffer
     delete SongSmash.mixSource
   }
+  this.isPlaying = false
 }
 
 SongSmash.slowDownVocal = function () {
@@ -164,7 +166,7 @@ SongSmash.play = function () {
     mixSource.loop = true
     mixSource.start(0)
     SongSmash.mixSource = mixSource
-
+    SongSmash.isPlaying = true
     console.log("Playing mix.")
   }
   offlineContext.startRendering()
