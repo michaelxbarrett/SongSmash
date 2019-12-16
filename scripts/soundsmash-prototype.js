@@ -68,11 +68,11 @@ SongSmash.loadPrevVocal = function () {
 }
 
 SongSmash.stop = function () {
-  if (SongSmash.source1) {
+  if (SongSmash.source1 && SongSmash.source1.playbackState === 2) {
     SongSmash.source1.stop()
     SongSmash.source1.disconnect()
   }
-  if (SongSmash.source2) {
+  if (SongSmash.source2 && SongSmash.source2.playbackState === 2) {
     SongSmash.source2.stop()
     SongSmash.source2.disconnect()
   }
