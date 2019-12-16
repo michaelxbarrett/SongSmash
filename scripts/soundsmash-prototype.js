@@ -88,7 +88,7 @@ SongSmash.stop = function () {
   if (SongSmash.source2) {
     SongSmash.source2.stop()
     SongSmash.source2.disconnect()
-    SongSmash.source1 = null
+    SongSmash.source2 = null
   }
   if (SongSmash.mixSource) {
     SongSmash.mixSource.stop()
