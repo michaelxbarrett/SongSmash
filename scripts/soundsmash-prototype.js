@@ -1,5 +1,5 @@
 var SongSmash = {
-  instrumentalBufferList: [],
+  instrumentalBuffer: [],
   vocalBufferList: [],
   instrumentalIndex: 0,
   vocalIndex: 0,
@@ -8,20 +8,22 @@ var SongSmash = {
   instrumentalMultiplier: 1,
   gainNode: null,
   source1: null,
-  source2: null,
-  isPlaying: false
+  source2: null
 }
 
 SongSmash.loadNextInstrumental = function () {
   this.instrumentalMultiplier = 1
-  if (this.instrumentalIndex + 1 < this.instrumentalBufferList.length) {
+  if (this.instrumentalIndex + 1 < InstrumentalFiles.length) {
     this.instrumentalIndex++
   } else {
     this.instrumentalIndex = 0
   }
-  this.stop()
-  this.updateUI()
-  this.play()
+  this.getInstrumentalBuffer(function(bufferList){
+    SongSmash.instrumentalBufferList = bufferList
+    SongSmash.stop()
+    SongSmash.updateUI()
+    SongSmash.play()
+  })
 }
 
 SongSmash.loadPrevInstrumental = function () {
@@ -31,9 +33,12 @@ SongSmash.loadPrevInstrumental = function () {
   } else {
     this.instrumentalIndex = this.vocalBufferList.length - 1
   }
-  this.stop()
-  this.updateUI()
-  this.play()
+  this.getInstrumentalBuffer(function(bufferList){
+    SongSmash.instrumentalBufferList = bufferList
+    SongSmash.stop()
+    SongSmash.updateUI()
+    SongSmash.play()
+  })
 }
 
 SongSmash.currentInstrumentalImageUrl = function () {
@@ -46,14 +51,17 @@ SongSmash.currentVocalImageUrl = function () {
 
 SongSmash.loadNextVocal = function () {
   this.vocalMultiplier = 1
-  if (this.vocalIndex + 1 < this.vocalBufferList.length) {
+  if (this.vocalIndex + 1 < VocalFiles.length) {
     this.vocalIndex++
   } else {
     this.vocalIndex = 0
   }
-  this.stop()
-  this.updateUI()
-  this.play()
+  this.getVocalBuffer(function(bufferList){
+    SongSmash.vocalBufferList = bufferList
+    SongSmash.stop()
+    SongSmash.updateUI()
+    SongSmash.play()
+  })
 }
 
 SongSmash.loadPrevVocal = function () {
@@ -63,19 +71,24 @@ SongSmash.loadPrevVocal = function () {
   } else {
     this.vocalIndex = this.vocalBufferList.length - 1
   }
-  this.stop()
-  this.updateUI()
-  this.play()
+  this.getVocalBuffer(function(bufferList){
+    SongSmash.vocalBufferList = bufferList
+    SongSmash.stop()
+    SongSmash.updateUI()
+    SongSmash.play()
+  })
 }
 
 SongSmash.stop = function () {
-  if (SongSmash.source1 && this.isPlaying) {
+  if (SongSmash.source1) {
     SongSmash.source1.stop()
     SongSmash.source1.disconnect()
+    SongSmash.source1 = null
   }
-  if (SongSmash.source2 && this.isPlaying) {
+  if (SongSmash.source2) {
     SongSmash.source2.stop()
     SongSmash.source2.disconnect()
+    SongSmash.source1 = null
   }
   if (SongSmash.mixSource) {
     SongSmash.mixSource.stop()
@@ -83,7 +96,6 @@ SongSmash.stop = function () {
     delete SongSmash.mixSource.buffer
     delete SongSmash.mixSource
   }
-  this.isPlaying = false
 }
 
 SongSmash.slowDownVocal = function () {
@@ -115,8 +127,8 @@ SongSmash.play = function () {
   if (this.instrumentalBufferList.length < 0 || this.vocalBufferList.length < 0) {
     return
   }
-  var instrumentalBuffer = this.instrumentalBufferList[this.instrumentalIndex]
-  var vocalBuffer = this.vocalBufferList[this.vocalIndex]
+  var instrumentalBuffer = this.instrumentalBufferList[0]
+  var vocalBuffer = this.vocalBufferList[0]
   var vocalBPM = VocalFiles[this.vocalIndex].bpm
   var instrumentalBPM = InstrumentalFiles[this.instrumentalIndex].bpm
   var instrumentalDuration = instrumentalBuffer.duration
@@ -166,7 +178,6 @@ SongSmash.play = function () {
     mixSource.loop = true
     mixSource.start(0)
     SongSmash.mixSource = mixSource
-    SongSmash.isPlaying = true
     console.log("Playing mix.")
   }
   offlineContext.startRendering()
@@ -174,25 +185,25 @@ SongSmash.play = function () {
 
 SongSmash.setVocalImage = function () {
   getDataUri(this.currentVocalImageUrl(), function (dataUri) {
-    // Destroy old image
     if (temporaryImage) objectURL.revokeObjectURL(temporaryImage);
-
-    // Create a new image from binary data
     var imageDataBlob = convertDataURIToBlob(dataUri);
-
-    // Create a new object URL object
     temporaryImage = objectURL.createObjectURL(imageDataBlob);
+    $("#vocalImage").attr("src", temporaryImage)
+  });
+}
 
-    // Set the new image
-    //imageElement.src = temporaryImage;
-    //$("#vocalImage").attr("src", temporaryImage)
-
+SongSmash.setInstrumentalImage = function () {
+  getDataUri(this.currentInstrumentalImageUrl(), function (dataUri) {
+    if (temporaryImage) objectURL.revokeObjectURL(temporaryImage);
+    var imageDataBlob = convertDataURIToBlob(dataUri);
+    temporaryImage = objectURL.createObjectURL(imageDataBlob);
+    $("#instrumentalImage").attr("src", temporaryImage)
   });
 }
 
 SongSmash.updateUI = function () {
   this.setVocalImage()
-  //$("#instrumentalImage").attr("src", this.currentInstrumentalImageUrl())
+  this.setInstrumentalImage()
 }
 
 SongSmash.setBPM = function (element) {
@@ -238,23 +249,34 @@ SongSmash.finishedLoadingVocals = function (bufferList) {
   }
 }
 
+SongSmash.getVocalBuffer = function(completion) {
+  var vocalsBufferLoader = new BufferLoader(
+    context,
+    [VocalFiles[SongSmash.vocalIndex].file],
+    completion
+  )
+  vocalsBufferLoader.load()
+}
+
+SongSmash.getInstrumentalBuffer = function(completion) {
+  var instrumentalsBufferLoader = new BufferLoader(
+    context,
+    [InstrumentalFiles[SongSmash.instrumentalIndex].file],
+    completion
+  )
+  instrumentalsBufferLoader.load()
+}
+
 SongSmash.init = function () {
   // Fix up prefixing
   SongSmash.gainNode = context.createGain()
   SongSmash.gainNode.connect(context.destination)
-  var instrumentalsBufferLoader = new BufferLoader(
-    context,
-    InstrumentalFiles.map(x => x.file),
-    SongSmash.finishedLoadingInstrumentals
-  )
-
-  var vocalsBufferLoader = new BufferLoader(
-    context,
-    VocalFiles.map(x => x.file),
-    SongSmash.finishedLoadingVocals
-  )
-  instrumentalsBufferLoader.load()
-  vocalsBufferLoader.load()
+  SongSmash.getInstrumentalBuffer(function(bufferList) {
+    SongSmash.finishedLoadingInstrumentals(bufferList)
+  })
+  SongSmash.getVocalBuffer(function(bufferList) {
+    SongSmash.finishedLoadingVocals(bufferList)
+  })
 }
 
 
