@@ -83,13 +83,13 @@ SongSmash.stop = function () {
   if (SongSmash.source1) {
     SongSmash.source1.stop()
     SongSmash.source1.disconnect()
-    SongSmash.source1.buffer = null
+    SongSmash.source1.buffer = context.createBuffer(1, 1, 22050)
     SongSmash.source1 = null
   }
   if (SongSmash.source2) {
     SongSmash.source2.stop()
     SongSmash.source2.disconnect()
-    SongSmash.source2.buffer = null
+    SongSmash.source2.buffer = context.createBuffer(1, 1, 22050)
     SongSmash.source2 = null
   }
   if (SongSmash.mixSource) {
