@@ -202,8 +202,8 @@ SongSmash.setInstrumentalImage = function () {
 }
 
 SongSmash.updateUI = function () {
-  this.setVocalImage()
-  this.setInstrumentalImage()
+  //this.setVocalImage()
+  //this.setInstrumentalImage()
 }
 
 SongSmash.setBPM = function (element) {
