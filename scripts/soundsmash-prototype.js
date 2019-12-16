@@ -31,7 +31,7 @@ SongSmash.loadPrevInstrumental = function () {
   if (this.instrumentalIndex > 0) {
     this.instrumentalIndex--
   } else {
-    this.instrumentalIndex = this.vocalBufferList.length - 1
+    this.instrumentalIndex = InstrumentalFiles.length - 1
   }
   this.getInstrumentalBuffer(function(bufferList){
     SongSmash.instrumentalBufferList = bufferList
@@ -69,7 +69,7 @@ SongSmash.loadPrevVocal = function () {
   if (this.vocalIndex > 0) {
     this.vocalIndex--
   } else {
-    this.vocalIndex = this.vocalBufferList.length - 1
+    this.vocalIndex = VocalFiles.length - 1
   }
   this.getVocalBuffer(function(bufferList){
     SongSmash.vocalBufferList = bufferList
