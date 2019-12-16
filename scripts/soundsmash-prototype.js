@@ -188,7 +188,7 @@ SongSmash.setVocalImage = function () {
     if (temporaryImage) objectURL.revokeObjectURL(temporaryImage);
     var imageDataBlob = convertDataURIToBlob(dataUri);
     temporaryImage = objectURL.createObjectURL(imageDataBlob);
-    $("#vocalImage").attr("src", temporaryImage)
+    //$("#vocalImage").attr("src", temporaryImage)
   });
 }
 
@@ -197,7 +197,7 @@ SongSmash.setInstrumentalImage = function () {
     if (temporaryImage) objectURL.revokeObjectURL(temporaryImage);
     var imageDataBlob = convertDataURIToBlob(dataUri);
     temporaryImage = objectURL.createObjectURL(imageDataBlob);
-    $("#instrumentalImage").attr("src", temporaryImage)
+    //$("#instrumentalImage").attr("src", temporaryImage)
   });
 }
 
