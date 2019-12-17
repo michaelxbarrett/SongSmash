@@ -1,6 +1,6 @@
 var SongSmash = {
-  instrumentalBuffer: [],
-  vocalBufferList: [],
+  instrumentalBuffer: null,
+  vocalBuffer: [],
   instrumentalIndex: 0,
   vocalIndex: 0,
   targetBPM: 120,
@@ -18,8 +18,8 @@ SongSmash.loadNextInstrumental = function () {
   } else {
     this.instrumentalIndex = 0
   }
-  this.getInstrumentalBuffer(function(bufferList){
-    SongSmash.instrumentalBufferList = bufferList
+  this.getInstrumentalBuffer(function(buffer){
+    SongSmash.instrumentalBuffer = buffer
     SongSmash.stop()
     SongSmash.updateUI()
     SongSmash.play()
@@ -33,8 +33,8 @@ SongSmash.loadPrevInstrumental = function () {
   } else {
     this.instrumentalIndex = InstrumentalFiles.length - 1
   }
-  this.getInstrumentalBuffer(function(bufferList){
-    SongSmash.instrumentalBufferList = bufferList
+  this.getInstrumentalBuffer(function(buffer){
+    SongSmash.instrumentalBuffer = buffer
     SongSmash.stop()
     SongSmash.updateUI()
     SongSmash.play()
@@ -57,7 +57,7 @@ SongSmash.loadNextVocal = function () {
     this.vocalIndex = 0
   }
   this.getVocalBuffer(function(bufferList){
-    SongSmash.vocalBufferList = bufferList
+    SongSmash.vocalBuffer = bufferList
     SongSmash.stop()
     SongSmash.updateUI()
     SongSmash.play()
@@ -72,7 +72,7 @@ SongSmash.loadPrevVocal = function () {
     this.vocalIndex = VocalFiles.length - 1
   }
   this.getVocalBuffer(function(bufferList){
-    SongSmash.vocalBufferList = bufferList
+    SongSmash.vocalBuffer = bufferList
     SongSmash.stop()
     SongSmash.updateUI()
     SongSmash.play()
@@ -83,13 +83,13 @@ SongSmash.stop = function () {
   if (SongSmash.source1) {
     SongSmash.source1.stop()
     SongSmash.source1.disconnect()
-    SongSmash.source1.buffer = context.createBuffer(1, 1, 22050)
+    //SongSmash.source1.buffer = context.createBuffer(1, 1, 22050)
     SongSmash.source1 = null
   }
   if (SongSmash.source2) {
     SongSmash.source2.stop()
     SongSmash.source2.disconnect()
-    SongSmash.source2.buffer = context.createBuffer(1, 1, 22050)
+    //SongSmash.source2.buffer = context.createBuffer(1, 1, 22050)
     SongSmash.source2 = null
   }
   if (SongSmash.mixSource) {
@@ -126,16 +126,11 @@ SongSmash.speedUpInstrumental = function () {
 
 SongSmash.play = function () {
   // create and set up sources
-  if (this.instrumentalBufferList.length < 0 || this.vocalBufferList.length < 0) {
-    return
-  }
-  var instrumentalBuffer = this.instrumentalBufferList[0]
-  var vocalBuffer = this.vocalBufferList[0]
   var vocalBPM = VocalFiles[this.vocalIndex].bpm
   var instrumentalBPM = InstrumentalFiles[this.instrumentalIndex].bpm
-  var instrumentalDuration = instrumentalBuffer.duration
+  var instrumentalDuration = this.instrumentalBuffer.duration
   var instrumentalPlaybackRate = this.normalizedPlaybackRate(instrumentalDuration, instrumentalBPM) * this.instrumentalMultiplier
-  var vocalsDuration = vocalBuffer.duration
+  var vocalsDuration = this.vocalBuffer.duration
   var vocalsPlaybackRate = this.normalizedPlaybackRate(vocalsDuration, vocalBPM) * this.vocalMultiplier
 
   var numberOfChannels = 2
@@ -148,10 +143,10 @@ SongSmash.play = function () {
 
   var source1 = offlineContext.createBufferSource()
   var source2 = offlineContext.createBufferSource()
-  source1.buffer = instrumentalBuffer
+  source1.buffer = this.instrumentalBuffer
   source1.playbackRate.value = instrumentalPlaybackRate
   source1.loop = true
-  source2.buffer = vocalBuffer
+  source2.buffer = this.vocalBuffer
   source2.playbackRate.value = vocalsPlaybackRate
   //source2.loop = true
 
@@ -233,20 +228,20 @@ function sessionWillBegin() {
   SongSmash.play()
 }
 
-SongSmash.finishedLoadingInstrumentals = function (bufferList) {
+SongSmash.finishedLoadingInstrumentals = function (buffer) {
   console.log("Instrumentals loaded.")
   // Create two sources and play them both together.
-  SongSmash.instrumentalBufferList = bufferList
-  if (SongSmash.vocalBufferList.length > 0) {
+  SongSmash.instrumentalBuffer = buffer
+  if (SongSmash.vocalBuffer) {
     SongSmash.onDoneLoading()
   }
 }
 
-SongSmash.finishedLoadingVocals = function (bufferList) {
+SongSmash.finishedLoadingVocals = function (buffer) {
   console.log("Vocals loaded.")
   // Create two sources and play them both together.
-  SongSmash.vocalBufferList = bufferList
-  if (SongSmash.instrumentalBufferList.length > 0) {
+  SongSmash.vocalBuffer = buffer
+  if (SongSmash.instrumentalBuffer) {
     SongSmash.onDoneLoading()
   }
 }
@@ -273,11 +268,11 @@ SongSmash.init = function () {
   // Fix up prefixing
   SongSmash.gainNode = context.createGain()
   SongSmash.gainNode.connect(context.destination)
-  SongSmash.getInstrumentalBuffer(function(bufferList) {
-    SongSmash.finishedLoadingInstrumentals(bufferList)
+  SongSmash.getInstrumentalBuffer(function(buffer) {
+    SongSmash.finishedLoadingInstrumentals(buffer)
   })
-  SongSmash.getVocalBuffer(function(bufferList) {
-    SongSmash.finishedLoadingVocals(bufferList)
+  SongSmash.getVocalBuffer(function(buffer) {
+    SongSmash.finishedLoadingVocals(buffer)
   })
 }
 

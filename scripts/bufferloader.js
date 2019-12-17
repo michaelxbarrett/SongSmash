@@ -2,7 +2,7 @@ function BufferLoader(context, urlList, callback) {
   this.context = context;
   this.urlList = urlList;
   this.onload = callback;
-  this.bufferList = new Array();
+  //this.bufferList = new Array();
   this.loadCount = 0;
 }
 
@@ -28,11 +28,12 @@ BufferLoader.prototype.loadBuffer = function (url, index) {
             alert('error decoding file data: ' + url);
             return;
           }
-          loader.bufferList[index] = buffer;
-          if (++loader.loadCount == loader.urlList.length) {
-            loader.onload(loader.bufferList);
-            loader.bufferList = new Array();
-          }
+          loader.onload(buffer);
+          //loader.bufferList[index] = buffer;
+          //if (++loader.loadCount == loader.urlList.length) {
+            //loader.onload(loader.bufferList);
+            //loader.bufferList = new Array();
+          //}
         },
         function (error) {
           console.error('decodeAudioData error', error);

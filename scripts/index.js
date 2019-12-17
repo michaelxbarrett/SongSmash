@@ -5,20 +5,6 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 window.OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
 context = new AudioContext();
 
-window.addEventListener('touchstart', function() {
-
-	// create empty buffer
-	var buffer = context.createBuffer(1, 1, 22050);
-	var source = context.createBufferSource();
-	source.buffer = buffer;
-
-	// connect to output (your speakers)
-	source.connect(context.destination);
-
-	// play the file
-	source.start(0);
-
-}, false);
 
 var BASE64_MARKER = ';base64,';
 var temporaryImage;
